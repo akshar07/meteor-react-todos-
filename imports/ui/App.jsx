@@ -6,9 +6,23 @@ import Task from './Task.jsx';
 import { Tasks } from '../api/tasks.js';
 
  class App extends Component{
-  
+  constructor(props){
+      super(props)
+      this.state={
+          hideCompleted:false
+      }
+  }
+  toggleHideCompleted(){
+     
+      this.setState({hideCompleted:!this.state.hideCompleted})
+      alert(this.state.hideCompleted)
+  }
     renderTasks(){
-       return this.props.tasks.map((task)=>{
+        let filteredTasks=this.props.tasks;
+        if(this.state.hideCompleted){
+            filteredTasks=filteredTasks.filter((task)=>!task.checked)
+        }
+       return filteredTasks.map((task)=>{
             return (
                 <Task id={task.id} task={task}/>
             )
@@ -31,6 +45,14 @@ import { Tasks } from '../api/tasks.js';
                 <header>
                     Todo - list
                 </header>
+                <label className="hide-completed">
+                    <input type="checkbox"
+                    readOnly
+                    checked={this.state.hideCompleted}
+                    onClick={this.toggleHideCompleted.bind(this)}
+                    />
+                    Hide Completed tasks
+                </label>
                 <form className="new-task" onSubmit={this.handleSubmit.bind(this)}>
                     <input 
                     type="text"
